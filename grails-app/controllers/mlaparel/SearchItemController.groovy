@@ -1,5 +1,7 @@
 package mlaparel
 
+import grails.plugins.rest.client.RestBuilder
+import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.dao.DataIntegrityViolationException
 
 class SearchItemController {
@@ -11,7 +13,11 @@ class SearchItemController {
     }
 
     def list(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
+		def rest = new RestBuilder()
+		def resp = rest.get("https://api.mercadolibre.com/countries")
+	    def countries = resp.json
+		
+		params.max = Math.min(max ?: 10, 100)
         [searchItemInstanceList: SearchItem.list(params), searchItemInstanceTotal: SearchItem.count()]
     }
 
